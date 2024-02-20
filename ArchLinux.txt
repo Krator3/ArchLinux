@@ -201,10 +201,12 @@ P.S: это можно сделать при помощи balenaetcher или ve
 	P.S: После перезагрузки появится многофункцианальная консоль
 
 27) Добавляем звук в нашу систему:
-	sudo pacman -S pipewire pipewire-alsa pipewire-jack pipewire-pulse gst-plugin-pipewire libpulse wireplumber
+	sudo pacman -S pipewire pipewire-pulse wireplumber
 
 	Активируем звуковой демон:
-		systemctl enable --user pipewire-pulse.service
+		systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service
+
+Ссылка на источник: https://github.com/mikeroyal/PipeWire-Guide
 
 28) Устанавливаем Xorg (утилита для отображения графического интрефейса):
 	sudo pacman -S xorg xorg-xinit xorg-apps mesa-libgl
@@ -773,12 +775,7 @@ Ctrl+d - закрыть терминал (поле для ввода коман�
 
 Pipewire: Аудиоустройства не найдены (звук отсутствует)
 
-	systemctl --user restart pipewire pipewire-pulse
-
-	P.S: Команда перезапускает службы pipewire и pipewire-pulse на уровне пользователя (user level)
-
-Ссылка на оригинал:
-	https://www.reddit.com/r/archlinux/comments/m7yc6j/pipewire_0324_no_audio_devices_found/
+	systemctl --user restart pipewire.socket pipewire-pulse.socket wireplumber.service
 
 -----------------------------------------------------------------------------------------
 
