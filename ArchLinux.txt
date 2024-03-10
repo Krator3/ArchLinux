@@ -221,9 +221,6 @@ P.S: это можно сделать при помощи balenaetcher или ve
 		Прописываем следующее в параметр "MODULES":
 			MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
-		Также следует удалить kms из массива HOOKS
-		P.S:  это не позволит initramfs содержать модуль nouveau
-
 		Нажимаем сочетание клавиш Ctrl+X, затем "y" и Enter
 
 		Перегенерируем файл:
