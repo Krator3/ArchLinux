@@ -221,10 +221,30 @@ P.S: это можно сделать при помощи balenaetcher или ve
 		Прописываем следующее в параметр "MODULES":
 			MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
-		Нажимаем сочетание клавиш Ctrl+X, затем "y" и Enter
+		Также следует удалить kms из массива HOOKS
+		P.S:  это не позволит initramfs содержать модуль nouveau
+
+		Нажимаем сочетание клавиш Ctrl+x, затем "y" и Enter
 
 		Перегенерируем файл:
 			sudo mkinitcpio -P
+
+		Проверяем, что драйвер работает в нужном режиме:
+			sudo cat /sys/module/nvidia_drm/parameters/modeset
+
+			P.S: Если модуль подключен, то в выводе будет "Y". Если "N", то продолжаем настройку.
+
+		Редактируем файл "grub":
+			sudo nano /etc/default/grub
+
+		Добавляем параметр для работы Nvidia с Wayland:
+			Пишем в строку GRUB_CMDLINE_LINUX_DEFAULT параметр nvidia-drm.modeset=1
+			Примечание: данный параметр нужно прописать до параметра quiet
+
+		Обновляем GRUB:
+			sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+		Перезагружаем ПК командой reboot
 				
 30) Устанавливаем рабочее окружение:
 	KDE Plasma:
@@ -385,35 +405,8 @@ P.S: В Target должны быть указаны пакеты, которые
 
 -----------------------------------------------------------------------------------------
 
-Активируем поддержку Wayland в KDE с использованием проприетарных драйверов Nvidia:
-P.S: Так как вышла plasma 6 пакеты для установки могли измениться, но в целом все должно работать также
-
-    1) Открываем терминал
-
-    2) Устанавливаем нужные компоненты:
-        sudo pacman -S --needed xorg-xwayland libxcb qt5-wayland qt6-wayland plasma-wayland-session egl-wayland
-
-		P.S: последний пакет нужен для видеокарт Nvidia
-
-    3) Проверяем, что драйвер работает в нужном режиме:
-        sudo cat /sys/module/nvidia_drm/parameters/modeset
-
-        Если модуль подключен, то в выводе будет "Y". Если "N", то продолжаем настройку.
-
-    4) Редактируем файл "grub":
-        sudo nano /etc/default/grub
-    
-    5) Добавляем параметр для работы Nvidia с Wayland:
-        Пишем в строку GRUB_CMDLINE_LINUX_DEFAULT параметр nvidia-drm.modeset=1
-        
-        Примечание: данный параметр нужно прописать до параметра quiet
-
-    6) Обновляем GRUB:
-        sudo grub-mkconfig -o /boot/grub/grub.cfg
-
-    7) Перезагружаем ПК командой reboot
-
-Рекомендуемая настройка Wayland:
+Настройка Wayland:
+P.S: всвязи с масштабным обновлением kde plasma 6 данный блок может быть неактуальным!
 
 	1) Создаём каталог "environment.d":
 		mkdir ~/.config/environment.d/
@@ -434,9 +427,8 @@ QT_QUICK_BACKEND=software
 CLUTTER_BACKEND=wayland
 SDL_VIDEODRIVER="wayland,x11"
 	
-		Параметры для других приложений следует прописывать в этом же файле
-	
-		P.S: параметры считываются только этим пользователем и только в сеансе Wayland, так как в Xorg они бесполезны
+Параметры для других приложений следует прописывать в этом же файле
+P.S: параметры считываются только этим пользователем и только в сеансе Wayland, так как в Xorg они бесполезны
 
 Ссылка на оригинал:
         https://m.vk.com/@linux2-wayland-v-kde-na-endeavouros
